@@ -6,19 +6,32 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { RegisterTask } from "../task/interfaceTask";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const TaskRegisterView = () => {
+interface TaskRegisterViewProps {
+  onTaskAdded: () => void; 
+}
+
+export const TaskRegisterView: React.FC<TaskRegisterViewProps> = ({
+  onTaskAdded,
+}) => {
   const [task, setTask] = useState<RegisterTask>({
     title: "",
     sla: 0,
-    file: "", 
+    file: "",
   });
 
   const [loading, setLoading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+    "success"
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTask({ ...task, [e.target.name]: e.target.value });
@@ -27,31 +40,28 @@ export const TaskRegisterView = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-  
-    const dueDate = new Date();
-    dueDate.setHours(dueDate.getHours() + task.sla);
-  
+
     try {
-      const formData = new FormData();
-      formData.append("title", task.title);
-      formData.append("sla", task.sla.toString());
-      formData.append("dueDate", dueDate.toISOString());
-      formData.append("file", task.file);  
-  
-      await axios.post(`${API_URL}/task`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }, 
+      const payload = { title: task.title, sla: task.sla, file: task.file };
+      await axios.post(`${API_URL}/task`, payload, {
+        headers: { "Content-Type": "application/json" },
       });
-  
-      alert("Task registered successfully!");
+
+      setSnackbarMessage("Tarefa registrada com sucesso!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+
       setTask({ title: "", sla: 0, file: "" });
+      onTaskAdded(); 
     } catch (error) {
-      console.error("Error registering task:", error);
-      alert("Failed to register task.");
+      console.error("Erro ao registrar tarefa:", error);
+      setSnackbarMessage("Falha ao registrar tarefa.");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <Box sx={{ maxWidth: 400, mx: "auto", mt: 4 }}>
@@ -100,6 +110,29 @@ export const TaskRegisterView = () => {
           {loading ? <CircularProgress size={24} /> : "Registrar Tarefa"}
         </Button>
       </form>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }} 
+      >
+        <Alert
+          onClose={() => setSnackbarOpen(false)}
+          severity={snackbarSeverity}
+          sx={{
+            width: "100%",
+            fontSize: "1.2rem", 
+            fontWeight: "bold", 
+            padding: "16px", 
+            backgroundColor:
+              snackbarSeverity === "success" ? "#2ecc71" : undefined, 
+            color: "#fff", 
+          }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
