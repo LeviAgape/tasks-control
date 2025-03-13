@@ -1,0 +1,54 @@
+# 🏗️ Build / Binários
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.app
+*.ipa
+*.o
+*.so
+*.dylib
+
+project.lock.json
+project.assets.json
+
+# 📦 Dependências
+**/node_modules/
+**/packages/
+!**/packages/build/
+.project.lock.json
+project.lock.json
+project.assets.json
+
+# 🔧 Configurações de IDE / Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln*
+*.csproj.user
+
+# 🚀 Publicações
+publish/
+out/
+
+# 📝 Logs / Debug
+*.log
+logs/
+*.vs/
+.vs/
+
+# 🔑 Credenciais / Configs Sensíveis
+secrets.json
+.env
+appsettings.json
+appsettings.Development.json
+
+# 🛠️ Cache / Temporários
+*.pid
+*.seed
+*.swp
+Thumbs.db
+.DS_Store
