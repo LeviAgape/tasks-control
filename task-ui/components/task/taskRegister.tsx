@@ -16,7 +16,6 @@ export const TaskRegisterView = () => {
     title: "",
     sla: 0,
     file: "", 
-    dueDate: null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -28,23 +27,23 @@ export const TaskRegisterView = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+  
     const dueDate = new Date();
     dueDate.setHours(dueDate.getHours() + task.sla);
-
+  
     try {
       const formData = new FormData();
       formData.append("title", task.title);
       formData.append("sla", task.sla.toString());
       formData.append("dueDate", dueDate.toISOString());
-      formData.append("file", task.file); 
-
+      formData.append("file", task.file);  
+  
       await axios.post(`${API_URL}/task`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data" }, 
       });
-
+  
       alert("Task registered successfully!");
-      setTask({ title: "", sla: 0, file: "", dueDate: null });
+      setTask({ title: "", sla: 0, file: "" });
     } catch (error) {
       console.error("Error registering task:", error);
       alert("Failed to register task.");
@@ -52,6 +51,7 @@ export const TaskRegisterView = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <Box sx={{ maxWidth: 400, mx: "auto", mt: 4 }}>
@@ -81,7 +81,6 @@ export const TaskRegisterView = () => {
           required
           sx={{ mb: 2 }}
         />
-
         <TextField
           label="Caminho do Arquivo"
           name="file"

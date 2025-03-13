@@ -50,5 +50,5 @@ namespace TaskControl.Routes
                 return deleted ? Results.NoContent() : Results.NotFound("Task not found.");
             });
         }
-    }
+    } 
 }
